@@ -6,9 +6,9 @@
  */
 namespace Tmdb\Laravel\Adapters\Tests;
 
-use Tmdb\Laravel\Adapters\EventDispatcherLaravel4 as AdapterDispatcher;
+use Tmdb\Laravel\Adapters\EventDispatcher as AdapterDispatcher;
 
-class EventDispatcherTestLaravel4 extends AbstractEventDispatcherTest
+class EventDispatcherTest extends AbstractEventDispatcherTest
 {
     protected function createEventDispatcher()
     {
