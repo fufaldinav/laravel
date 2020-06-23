@@ -4,55 +4,15 @@
  * @author Mark Redeman <markredeman@gmail.com>
  * @copyright (c) 2014, Mark Redeman
  */
+
 namespace Tmdb\Laravel;
 
 use Illuminate\Support\ServiceProvider;
-use Tmdb\Laravel\TmdbServiceProviderLaravel4;
-use Tmdb\Laravel\TmdbServiceProviderLaravel5;
 use Tmdb\ApiToken;
 use Tmdb\Client;
 
 class TmdbServiceProvider extends ServiceProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
-    /**
-     * Actual provider
-     *
-     * @var \Illuminate\Support\ServiceProvider
-     */
-    protected $provider;
-
-    /**
-     * Construct the TMDB service provider
-     */
-    public function __construct()
-    {
-        // Call the parent constructor with all provided arguments
-        $arguments = func_get_args();
-        call_user_func_array(
-            [$this, 'parent::' . __FUNCTION__],
-            $arguments
-        );
-
-        $this->registerProvider();
-    }
-
-    /**
-     * Bootstrap the application events.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        return $this->provider->boot();
-    }
-
     /**
      * Register the service provider.
      *
@@ -60,8 +20,15 @@ class TmdbServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Configure any bindings that are version dependent
-        $this->provider->register();
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/config.php',
+            'tmdb'
+        );
+
+        $this->app->bind(
+            'Tmdb\Laravel\Adapters\EventDispatcherAdapter',
+            'Tmdb\Laravel\Adapters\EventDispatcher'
+        );
 
         // Let the IoC container be able to make a Symfony event dispatcher
         $this->app->bind(
@@ -70,47 +37,34 @@ class TmdbServiceProvider extends ServiceProvider
         );
 
         // Setup default configurations for the Tmdb Client
-        $this->app->singleton('Tmdb\Client', function() {
-            $config = $this->provider->config();
-            $options = $config['options'];
-
+        $this->app->singleton('Tmdb\Client', function ($app) {
             // Use an Event Dispatcher that uses the Laravel event dispatcher
-            $options['event_dispatcher'] = $this->app->make('Tmdb\Laravel\Adapters\EventDispatcherAdapter');
+            config([
+                'tmdb.options.event_dispatcher' => $this->app->make('Tmdb\Laravel\Adapters\EventDispatcherAdapter')
+            ]);
 
             // Register the client using the key and options from config
-            $token = new ApiToken($config['api_key']);
-            return new Client($token, $options);
+            $token = new ApiToken(config('tmdb.api_key'));
+            return new Client($token, config('tmdb.options'));
         });
 
         // bind the configuration (used by the image helper)
-        $this->app->bind('Tmdb\Model\Configuration', function() {
-            $configuration = $this->app->make('Tmdb\Repository\ConfigurationRepository');
-            return $configuration->load();
+        $this->app->bind('Tmdb\Model\Configuration', function ($app) {
+            return $app->make('Tmdb\Repository\ConfigurationRepository')->load();
         });
     }
 
     /**
-     * Register the ServiceProvider according to Laravel version
+     * Bootstrap the application services.
      *
-     * @return \Tmdb\Laravel\Provider\ProviderInterface
+     * @return void
      */
-    private function registerProvider()
+    public function boot()
     {
-        $app = $this->app;
-
-        // Pick the correct service provider for the current verison of Laravel
-        $this->provider = (version_compare($app::VERSION, '5.0', '<'))
-            ? new TmdbServiceProviderLaravel4($app)
-            : new TmdbServiceProviderLaravel5($app);
-    }
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return array('tmdb');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../config/config.php' => config_path('tmdb.php'),
+            ], 'tmdb-config');
+        }
     }
 }
