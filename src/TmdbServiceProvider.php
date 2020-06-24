@@ -1,16 +1,16 @@
 <?php
 /**
- * @package php-tmdb\laravel
  * @author Mark Redeman <markredeman@gmail.com>
  * @copyright (c) 2014, Mark Redeman
  */
+
 namespace Tmdb\Laravel;
 
 use Illuminate\Support\ServiceProvider;
-use Tmdb\Laravel\TmdbServiceProviderLaravel4;
-use Tmdb\Laravel\TmdbServiceProviderLaravel5;
 use Tmdb\ApiToken;
 use Tmdb\Client;
+use Tmdb\Laravel\TmdbServiceProviderLaravel4;
+use Tmdb\Laravel\TmdbServiceProviderLaravel5;
 
 class TmdbServiceProvider extends ServiceProvider
 {
@@ -22,21 +22,21 @@ class TmdbServiceProvider extends ServiceProvider
     protected $defer = false;
 
     /**
-     * Actual provider
+     * Actual provider.
      *
      * @var \Illuminate\Support\ServiceProvider
      */
     protected $provider;
 
     /**
-     * Construct the TMDB service provider
+     * Construct the TMDB service provider.
      */
     public function __construct()
     {
         // Call the parent constructor with all provided arguments
         $arguments = func_get_args();
         call_user_func_array(
-            [$this, 'parent::' . __FUNCTION__],
+            [$this, 'parent::'.__FUNCTION__],
             $arguments
         );
 
@@ -70,7 +70,7 @@ class TmdbServiceProvider extends ServiceProvider
         );
 
         // Setup default configurations for the Tmdb Client
-        $this->app->singleton('Tmdb\Client', function() {
+        $this->app->singleton('Tmdb\Client', function () {
             $config = $this->provider->config();
             $options = $config['options'];
 
@@ -79,18 +79,20 @@ class TmdbServiceProvider extends ServiceProvider
 
             // Register the client using the key and options from config
             $token = new ApiToken($config['api_key']);
+
             return new Client($token, $options);
         });
 
         // bind the configuration (used by the image helper)
-        $this->app->bind('Tmdb\Model\Configuration', function() {
+        $this->app->bind('Tmdb\Model\Configuration', function () {
             $configuration = $this->app->make('Tmdb\Repository\ConfigurationRepository');
+
             return $configuration->load();
         });
     }
 
     /**
-     * Register the ServiceProvider according to Laravel version
+     * Register the ServiceProvider according to Laravel version.
      *
      * @return \Tmdb\Laravel\Provider\ProviderInterface
      */
@@ -111,6 +113,6 @@ class TmdbServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('tmdb');
+        return ['tmdb'];
     }
 }

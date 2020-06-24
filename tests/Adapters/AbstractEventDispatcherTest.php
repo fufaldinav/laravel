@@ -11,11 +11,10 @@
 
 namespace Tmdb\Laravel\Adapters\Tests;
 
+use Prophecy\Prophecy\MethodProphecy;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
-use Prophecy\Prophecy\MethodProphecy;
 
 abstract class AbstractEventDispatcherTest extends \PHPUnit_Framework_TestCase
 {

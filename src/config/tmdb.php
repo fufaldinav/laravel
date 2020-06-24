@@ -1,6 +1,5 @@
 <?php
 /**
- * @package php-tmdb\laravel
  * @author Mark Redeman <markredeman@gmail.com>
  * @copyright (c) 2014, Mark Redeman
  */
@@ -11,11 +10,11 @@ return [
     'api_key' => '',
 
     /**
-     * Client options
+     * Client options.
      */
     'options' => [
         /**
-         * Use https
+         * Use https.
          */
         'secure' => true,
 
@@ -25,7 +24,7 @@ return [
         'cache' => [
             'enabled' => true,
             // Keep the path empty or remove it entirely to default to storage/tmdb
-            'path' => storage_path('tmdb')
+            'path' => storage_path('tmdb'),
         ],
 
         /*
@@ -34,7 +33,7 @@ return [
         'log' => [
             'enabled' => true,
             // Keep the path empty or remove it entirely to default to storage/logs/tmdb.log
-            'path' => storage_path('logs/tmdb.log')
-        ]
+            'path' => storage_path('logs/tmdb.log'),
+        ],
     ],
 ];

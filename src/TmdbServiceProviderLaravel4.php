@@ -1,15 +1,15 @@
 <?php
 /**
- * @package php-tmdb\laravel
  * @author Mark Redeman <markredeman@gmail.com>
  * @copyright (c) 2014, Mark Redeman
  */
+
 namespace Tmdb\Laravel;
 
 use Illuminate\Support\ServiceProvider;
 
-class TmdbServiceProviderLaravel4 extends ServiceProvider {
-
+class TmdbServiceProviderLaravel4 extends ServiceProvider
+{
     /**
      * Bootstrap the application events.
      *
@@ -31,7 +31,7 @@ class TmdbServiceProviderLaravel4 extends ServiceProvider {
     }
 
     /**
-     * Get the TMDB configuration from the config repository
+     * Get the TMDB configuration from the config repository.
      *
      * @return array
      */
