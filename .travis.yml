@@ -1,27 +1,19 @@
 language: php
 
 php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
   - 7.1
-  - nightly
-  - hhvm
-
-env:
-  matrix:
-    - COMPOSER_FLAGS="--prefer-lowest"
-    - COMPOSER_FLAGS=""
+  - 7.2
+  - 7.3
+  - 7.4
 
 matrix:
-  allow_failures:
-    - php: nightly
-    - php: hhvm
-
+  fast_finish: true
 
 before_script:
   - composer self-update
-  - composer update --prefer-source --no-interaction ${COMPOSER_FLAGS}
+  - composer install --prefer-source --no-interaction
+  - composer require --dev "laravel/laravel:^7.0" --no-update
+  - composer update
 
-script: vendor/bin/phpunit
+script:
+  - phpunit
