@@ -1,6 +1,5 @@
 <?php
 /**
- * @package php-tmdb\laravel
  * @author Mark Redeman <markredeman@gmail.com>
  * @copyright (c) 2014, Mark Redeman
  */
@@ -40,11 +39,12 @@ class TmdbServiceProvider extends ServiceProvider
         $this->app->singleton('Tmdb\Client', function ($app) {
             // Use an Event Dispatcher that uses the Laravel event dispatcher
             config([
-                'tmdb.options.event_dispatcher' => $this->app->make('Tmdb\Laravel\Adapters\EventDispatcherAdapter')
+                'tmdb.options.event_dispatcher' => $this->app->make('Tmdb\Laravel\Adapters\EventDispatcherAdapter'),
             ]);
 
             // Register the client using the key and options from config
             $token = new ApiToken(config('tmdb.api_key'));
+
             return new Client($token, config('tmdb.options'));
         });
 

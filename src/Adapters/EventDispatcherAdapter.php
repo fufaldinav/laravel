@@ -1,6 +1,5 @@
 <?php
 /**
- * @package php-tmdb\laravel
  * @author Mark Redeman <markredeman@gmail.com>
  * @copyright (c) 2014, Mark Redeman
  */
@@ -8,26 +7,25 @@
 namespace Tmdb\Laravel\Adapters;
 
 use Illuminate\Contracts\Events\Dispatcher;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as SymfonyDispatcher;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * This adapter provides a Laravel integration for applications
  * using the Symfony EventDispatcherInterface
  * It passes any request on to a Symfony Dispatcher and only
- * uses the Laravel Dispatcher when dispatching events
+ * uses the Laravel Dispatcher when dispatching events.
  */
 abstract class EventDispatcherAdapter implements SymfonyDispatcher
 {
-
     /**
-     * The Laravel Events Dispatcher
+     * The Laravel Events Dispatcher.
      * @var Dispatcher or \Illuminate\Events\Dispatcher
      */
     protected $laravelDispatcher;
 
     /**
-     * The Symfony Event Dispatcher
+     * The Symfony Event Dispatcher.
      * @var  SymfonyDispatcher
      */
     protected $symfonyDispatcher;
@@ -44,6 +42,7 @@ abstract class EventDispatcherAdapter implements SymfonyDispatcher
     public function dispatch(object $event, string $eventName = null): object
     {
         $this->laravelDispatcher->dispatch($event, $eventName);
+
         return $this->symfonyDispatcher->dispatch($event, $eventName);
     }
 
@@ -119,8 +118,8 @@ abstract class EventDispatcherAdapter implements SymfonyDispatcher
      */
     public function hasListeners(string $eventName = null)
     {
-        return ($this->symfonyDispatcher->hasListeners($eventName) ||
-            $this->laravelDispatcher->hasListeners($eventName));
+        return $this->symfonyDispatcher->hasListeners($eventName) ||
+            $this->laravelDispatcher->hasListeners($eventName);
     }
 
     /**
